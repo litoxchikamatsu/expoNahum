@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quién Quiere Ser Moldeado? - Edición Nahúm</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at center, #2e1a47 0%, #0d0614 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .title-font {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Estilo Millonario Celestial (Rombos/Hexágonos) */
+        .millionaire-btn {
+            position: relative;
+            background: linear-gradient(180deg, #1b0f30 0%, #0c0517 100%);
+            border: 2px solid #d4af37;
+            clip-path: polygon(4% 0%, 96% 0%, 100% 50%, 96% 100%, 4% 100%, 0% 50%);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .millionaire-btn:hover:not(:disabled) {
+            background: linear-gradient(180deg, #321c59 0%, #170a2b 100%);
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(254, 215, 0, 0.4);
+            transform: scale(1.02);
+        }
+
+        .millionaire-btn.selected {
+            background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%) !important;
+            border-color: #ffffff !important;
+            color: #0d0614;
+            animation: pulse-gold 1s infinite alternate;
+        }
+
+        .millionaire-btn.correct {
+            background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%) !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.7);
+            animation: flash-green 0.5s ease-in-out 3;
+        }
+
+        .millionaire-btn.wrong {
+            background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%) !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.7);
+        }
+
+        .millionaire-btn.eliminated {
+            opacity: 0.1;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Línea dorada de conexión del set de TV */
+        .connecting-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 8px rgba(254, 215, 0, 0.5); }
+            100% { box-shadow: 0 0 22px rgba(254, 215, 0, 0.9); }
+        }
+
+        @keyframes flash-green {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Rombos para la escala lateral de Fe */
+        .ladder-item {
+            clip-path: polygon(3% 0%, 97% 0%, 100% 50%, 97% 100%, 3% 100%, 0% 50%);
+            transition: all 0.2s ease-in-out;
+        }
+        .ladder-item.active {
+            background: linear-gradient(90deg, rgba(254, 215, 0, 0.35), rgba(254, 215, 0, 0.1));
+            border-left: 4px solid #ffd700;
+            border-right: 4px solid #ffd700;
+            font-weight: bold;
+            transform: scale(1.03);
+        }
+        
+        /* Personalización de barra de scroll para el panel de Fe */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(13, 6, 20, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ffd700;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between">
+
+    <!-- HEADER / BARRA SUPERIOR -->
+    <header class="p-4 bg-purple-950/40 border-b border-yellow-500/30 backdrop-blur-md flex justify-between items-center z-10">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full border-2 border-yellow-500 flex items-center justify-center bg-indigo-950 shadow-[0_0_10px_rgba(254,215,0,0.2)]">
+                <i class="fa-solid fa-dove text-yellow-400"></i>
+            </div>
+            <div>
+                <span class="text-xs text-yellow-400 uppercase tracking-widest block font-bold">La Trivia Celestial</span>
+                <h1 class="text-sm md:text-md font-bold text-white tracking-wide title-font">¿QUIÉN QUIERE SER MOLDEADO?</h1>
+            </div>
+        </div>
+        
+        <!-- Marcador de volumen / Silenciar -->
+        <button id="btn-sound" onclick="toggleMute()" class="px-3 py-1.5 rounded-lg bg-purple-950/80 border border-yellow-500/40 text-yellow-400 hover:bg-yellow-400 hover:text-purple-950 transition flex items-center space-x-2">
+            <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+            <span class="text-xs font-bold hidden sm:inline">EFECTOS</span>
+        </button>
+    </header>
+
+    <!-- PANTALLA PRINCIPAL DEL JUEGO -->
+    <main class="flex-grow flex items-center justify-center p-4">
+        
+        <!-- PANTALLA DE INICIO (START) -->
+        <div id="screen-start" class="max-w-2xl w-full bg-slate-900/90 border border-yellow-500/40 rounded-2xl p-6 md:p-8 text-center backdrop-blur-lg shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -left-10 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-500/10 rounded-full blur-3xl"></div>
+
+            <div class="w-24 h-24 mx-auto mb-6 rounded-full border-4 border-yellow-500 flex items-center justify-center bg-gradient-to-b from-purple-900 to-indigo-950 shadow-[0_0_35px_rgba(254,215,0,0.5)]">
+                <i class="fa-solid fa-cloud-sun text-5xl text-yellow-400"></i>
+            </div>
+            
+            <h2 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-600 title-font mb-2">
+                ¿Quién Quiere Ser Moldeado?
+            </h2>
+            <p class="text-yellow-400 font-bold uppercase tracking-widest text-sm mb-6">
+                Especial: El Clamor y la Profecía de Nahúm
+            </p>
+            
+            <div class="bg-purple-950/50 rounded-xl p-5 border border-purple-500/20 text-left text-sm text-slate-300 space-y-3 mb-8">
+                <p class="font-bold text-white text-center border-b border-yellow-500/30 pb-2 mb-2"><i class="fa-solid fa-book-open text-yellow-400 mr-2"></i>Reglas del Juego:</p>
+                <div class="flex items-start space-x-2">
+                    <span class="text-yellow-400 font-bold">1.</span>
+                    <span>Deberás superar <b id="start-levels-count">18</b> niveles acerca de los enigmas del libro del profeta Nahúm.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-yellow-400 font-bold">2.</span>
+                    <span>Tu meta final no es ganar dinero, sino certificar que eres un Experto en Nahúm.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-yellow-400 font-bold">3.</span>
+                    <span>Dispones de <b>3 comodines sagrados</b>: el 50:50, el Voto de la Congregación y la Llamada al Pastor.</span>
+                </div>
+            </div>
+
+            <button onclick="startGame()" class="w-full py-4 bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 hover:from-yellow-400 hover:to-amber-500 text-slate-950 font-black text-lg rounded-xl shadow-[0_4px_25px_rgba(254,215,0,0.4)] transition transform active:scale-95 tracking-wider">
+                <i class="fa-solid fa-fire-flame-curved mr-2"></i> INICIAR CAMINO DE FE
+            </button>
+        </div>
+
+        <!-- PANTALLA DE JUEGO (GAMEPLAY) -->
+        <div id="screen-game" class="hidden w-full max-w-6xl grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+            
+            <!-- PANEL DE PREGUNTAS (IZQUIERDA / CENTRO - 3 COLUMNAS) -->
+            <div class="lg:col-span-3 space-y-6 flex flex-col justify-between min-h-[520px]">
+                
+                <!-- COMODINES & ESTADO -->
+                <div class="flex justify-between items-center bg-purple-950/30 border border-purple-500/20 rounded-xl p-4">
+                    <div class="flex flex-col space-y-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs uppercase tracking-widest text-slate-400">Pregunta:</span>
+                            <span id="question-progress" class="px-2 py-0.5 text-xs font-bold text-yellow-400 bg-yellow-400/10 border border-yellow-500/30 rounded">1 / 18</span>
+                        </div>
+                        <div class="text-xs text-slate-300 font-bold">
+                            Nivel Actual: <span id="current-faith-badge" class="text-yellow-400">Inmaduro en la fe</span>
+                        </div>
+                    </div>
+
+                    <!-- Comodines Espirituales -->
+                    <div class="flex items-center space-x-2 sm:space-x-3">
+                        <!-- 50:50 -->
+                        <button id="lifeline-fifty" onclick="useFiftyFifty()" class="px-3 h-10 rounded-lg border border-yellow-500/40 bg-purple-950/80 hover:bg-yellow-400 hover:text-slate-950 transition text-yellow-400 font-black text-[11px] flex items-center justify-center shadow-lg" title="Intercesión Divina (50:50)">
+                            50:50
+                        </button>
+                        <!-- Llamada al Pastor -->
+                        <button id="lifeline-phone" onclick="usePhoneAFriend()" class="w-11 h-10 rounded-lg border border-yellow-500/40 bg-purple-950/80 hover:bg-yellow-400 hover:text-slate-950 transition text-yellow-400 text-sm flex items-center justify-center shadow-lg" title="Llamar al Pastor">
+                            <i class="fa-solid fa-phone"></i>
+                        </button>
+                        <!-- Voto de la Congregación -->
+                        <button id="lifeline-audience" onclick="useAudiencePoll()" class="w-11 h-10 rounded-lg border border-yellow-500/40 bg-purple-950/80 hover:bg-yellow-400 hover:text-slate-950 transition text-yellow-400 text-sm flex items-center justify-center shadow-lg" title="Voto de la Congregación">
+                            <i class="fa-solid fa-users"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PREGUNTA CENTRAL -->
+                <div class="space-y-6">
+                    <div class="text-center relative py-4 px-2">
+                        <div class="connecting-line w-full absolute top-1/2 left-0 -translate-y-1/2 -z-10 opacity-30"></div>
+                        <div class="inline-block bg-slate-950/90 border-2 border-yellow-500/60 rounded-2xl py-6 px-6 md:px-10 max-w-3xl mx-auto shadow-[0_0_25px_rgba(0,0,0,0.8)] relative">
+                            <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 bg-yellow-500 text-slate-950 text-[10px] font-black tracking-widest rounded-full uppercase">SABIDURÍA DE NAHÚM</span>
+                            <p id="question-text" class="text-base md:text-lg font-bold leading-relaxed text-slate-100">
+                                Cargando enigma...
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Opciones de Respuesta -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto px-4">
+                        <button id="opt-0" onclick="selectOption(0)" class="millionaire-btn p-4 text-left font-semibold flex items-center text-slate-200 transition">
+                            <span class="text-yellow-400 font-bold mr-3">A:</span> <span id="opt-text-0" class="flex-grow text-sm">Cargando opción...</span>
+                        </button>
+                        <button id="opt-1" onclick="selectOption(1)" class="millionaire-btn p-4 text-left font-semibold flex items-center text-slate-200 transition">
+                            <span class="text-yellow-400 font-bold mr-3">B:</span> <span id="opt-text-1" class="flex-grow text-sm">Cargando opción...</span>
+                        </button>
+                        <button id="opt-2" onclick="selectOption(2)" class="millionaire-btn p-4 text-left font-semibold flex items-center text-slate-200 transition">
+                            <span class="text-yellow-400 font-bold mr-3">C:</span> <span id="opt-text-2" class="flex-grow text-sm">Cargando opción...</span>
+                        </button>
+                        <button id="opt-3" onclick="selectOption(3)" class="millionaire-btn p-4 text-left font-semibold flex items-center text-slate-200 transition">
+                            <span class="text-yellow-400 font-bold mr-3">D:</span> <span id="opt-text-3" class="flex-grow text-sm">Cargando opción...</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ACCIÓN / RETROALIMENTACIÓN -->
+                <div class="max-w-xl mx-auto w-full px-4 pt-4 text-center">
+                    
+                    <!-- Botón para asegurar respuesta -->
+                    <button id="btn-lock" onclick="lockAnswer()" disabled class="w-full py-3 bg-gradient-to-r from-yellow-600 to-yellow-800 disabled:from-slate-800 disabled:to-slate-900 disabled:text-slate-600 disabled:border-slate-800 text-slate-950 font-black tracking-widest rounded-xl border border-yellow-500/50 transition duration-200 shadow-lg uppercase text-sm">
+                        DISCERNIR RESPUESTA
+                    </button>
+
+                    <!-- Panel de Explicación Posterior -->
+                    <div id="panel-feedback" class="hidden mt-4 bg-purple-950/80 border border-yellow-500/30 rounded-xl p-4 text-left space-y-2 animate-fade-in">
+                        <div class="flex items-center space-x-2">
+                            <span id="feedback-badge" class="px-2.5 py-0.5 rounded text-xs font-bold uppercase">¡Iluminado!</span>
+                            <h4 class="font-bold text-white text-sm">Revelación Bíblica:</h4>
+                        </div>
+                        <p id="feedback-text" class="text-xs text-slate-300">
+                            Explicación bíblica del contexto.
+                        </p>
+                        <button onclick="nextQuestion()" class="mt-2 w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg transition tracking-wider uppercase">
+                            SIGUIENTE PASO DE FE <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLA LADO DERECHO - ESCALA DE NIVELES DE FE (1 COLUMNA) -->
+            <div class="bg-slate-900/90 border border-yellow-500/30 rounded-2xl p-4 space-y-3 max-h-[580px] flex flex-col">
+                <h3 class="text-xs uppercase tracking-widest text-yellow-400 font-black text-center border-b border-purple-500/30 pb-2">NIVELES DE FE</h3>
+                
+                <div class="flex-grow overflow-y-auto custom-scrollbar pr-1 space-y-1 flex flex-col-reverse" id="ladder-container">
+                    <!-- Se inyectan dinámicamente los niveles de fe desde JavaScript -->
+                </div>
+
+                <div class="bg-purple-950/40 border border-purple-500/10 rounded-lg p-2.5 text-[11px] text-slate-400 space-y-1">
+                    <p class="font-semibold text-slate-300"><i class="fa-solid fa-shield-halved text-yellow-400 mr-1"></i>Puntos de Gracia:</p>
+                    <p>Cada respuesta acertada consolida de forma segura tu rango espiritual.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA FIN DE JUEGO / VICTORIA / DERROTA -->
+        <div id="screen-end" class="hidden max-w-lg w-full bg-slate-900/90 border-2 rounded-2xl p-8 text-center backdrop-blur-xl shadow-2xl space-y-6">
+            <div id="end-icon-container" class="w-24 h-24 mx-auto rounded-full flex items-center justify-center">
+                <!-- Icono dinámico -->
+            </div>
+
+            <h2 id="end-title" class="text-2xl md:text-3xl font-extrabold title-font">¡Fin de la Jornada!</h2>
+            <p id="end-subtitle" class="text-slate-300 text-sm">Mensaje final.</p>
+
+            <div class="bg-slate-950 border border-purple-500/30 rounded-xl p-5 space-y-1">
+                <span class="text-[10px] uppercase tracking-widest text-slate-400 block">Nivel Alcanzado</span>
+                <span id="end-prize" class="text-2xl font-black text-yellow-400 tracking-wider block">Inmaduro en la fe</span>
+            </div>
+
+            <!-- Explicación en caso de fallo -->
+            <div id="end-fail-explanation" class="hidden bg-red-950/40 border border-red-500/20 rounded-xl p-4 text-left text-xs text-slate-300 leading-relaxed">
+                <!-- Se inyecta sustento educativo bíblico -->
+            </div>
+
+            <button onclick="resetGame()" class="w-full py-3 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition uppercase text-xs tracking-wider">
+                VOLVER A ORAR Y JUGAR
+            </button>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="p-4 bg-slate-950 text-center text-[10px] text-slate-500 border-t border-purple-500/10 z-10">
+        <p>Exégesis de Nahúm © 2026 - Una pedagogía bíblica con pizcas de humor.</p>
+    </footer>
+
+    <!-- MODAL VOTO DE LA CONGREGACIÓN -->
+    <div id="modal-audience" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-slate-900 border border-yellow-500/40 rounded-2xl max-w-md w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-purple-500/20 pb-3">
+                <h3 class="font-bold text-yellow-400 flex items-center text-sm tracking-wide uppercase"><i class="fa-solid fa-users mr-2"></i> VOTO DE LA CONGREGACIÓN</h3>
+                <button onclick="closeModal('modal-audience')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-[11px] text-slate-300 italic">"Los hermanos levantan la mano tímidamente (algunos dormidos, otros distraídos), arrojando el siguiente censo espiritual:"</p>
+            
+            <!-- Gráficos de barra -->
+            <div class="space-y-3 pt-2">
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span>A: <span id="poll-label-0" class="text-slate-400">...</span></span>
+                        <span id="poll-val-0" class="text-yellow-400">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-950 rounded-full h-3 border border-purple-500/10">
+                        <div id="poll-bar-0" class="bg-yellow-500 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span>B: <span id="poll-label-1" class="text-slate-400">...</span></span>
+                        <span id="poll-val-1" class="text-yellow-400">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-950 rounded-full h-3 border border-purple-500/10">
+                        <div id="poll-bar-1" class="bg-yellow-500 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span>C: <span id="poll-label-2" class="text-slate-400">...</span></span>
+                        <span id="poll-val-2" class="text-yellow-400">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-950 rounded-full h-3 border border-purple-500/10">
+                        <div id="poll-bar-2" class="bg-yellow-500 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span>D: <span id="poll-label-3" class="text-slate-400">...</span></span>
+                        <span id="poll-val-3" class="text-yellow-400">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-950 rounded-full h-3 border border-purple-500/10">
+                        <div id="poll-bar-3" class="bg-yellow-500 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="closeModal('modal-audience')" class="w-full py-2 bg-purple-950 hover:bg-purple-900 border border-yellow-500/30 text-yellow-400 font-bold text-xs rounded-lg transition mt-2">
+                RECEPTAR VOTO
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL LLAMADA AL PASTOR DE TURNO -->
+    <div id="modal-phone" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-slate-900 border border-yellow-500/40 rounded-2xl max-w-md w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-purple-500/20 pb-3">
+                <h3 class="font-bold text-yellow-400 flex items-center text-sm uppercase tracking-wide"><i class="fa-solid fa-phone mr-2"></i> CONSULTANDO AL PASTOR</h3>
+                <button onclick="closeModal('modal-phone')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <!-- Animación de marcado -->
+            <div class="flex flex-col items-center justify-center py-4 space-y-3" id="phone-calling">
+                <div class="w-16 h-16 rounded-full bg-yellow-500/20 border-2 border-yellow-500 flex items-center justify-center animate-pulse">
+                    <i class="fa-solid fa-phone-volume text-2xl text-yellow-400"></i>
+                </div>
+                <p class="text-xs text-slate-400">Llamando por WhatsApp Celestial al Pastor Hermenegildo...</p>
+            </div>
+
+            <!-- Diálogo conectado -->
+            <div class="hidden flex flex-col space-y-4" id="phone-connected">
+                <div class="flex items-start space-x-3 bg-slate-950 p-4 rounded-xl border border-purple-500/20">
+                    <div class="w-10 h-10 rounded-full bg-purple-950 border border-yellow-500/30 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-vestments text-yellow-400 text-lg"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-xs font-bold text-yellow-400">Pastor Hermenegildo (Especialista en Profetas Menores)</p>
+                        <p id="phone-dialogue" class="text-xs text-slate-200 italic leading-relaxed">
+                            "Paz de Cristo, hermano. Déjame ver..."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-phone-action" onclick="closeModal('modal-phone')" class="w-full py-2 bg-purple-950 hover:bg-purple-900 border border-yellow-500/30 text-yellow-400 font-bold text-xs rounded-lg transition mt-2">
+                AMÉN
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        // ESCALA DE LOS NIVELES DE FE (Puedes acortar o alargar esta lista libremente)
+        // Ejemplo: Si dejas 5, 8 o 16 niveles, todas las preguntas de questionsData seguirán apareciendo
+        const faithLadder = [
+            "Inmaduro en la fe",        // Pregunta 1
+            "Lector de las Escrituras", // Pregunta 2
+            "Discípula",               // Pregunta 3
+            "Servidora",                // Pregunta 4
+            "Seminarista",       // Pregunta 7
+            "Anciana Gobernante",      // Pregunta 8
+            "Ayudante de Profeta",       // Pregunta 9
+            "Profeta Menor",            // Pregunta 10
+            "Profeta Mayor",            // Pregunta 11
+            "Apóstol",                 // Pregunta 13
+            "Biblista",      // Pregunta 14
+            "Experto en Nahum"            // Pregunta 16
+        ];
+
+        // CONFIGURACIÓN DE LAS 18 PREGUNTAS (Se muestran todas las 18 sin omitir ninguna)
+        const questionsData = [
+            {
+                question: "¿Qué imperio ejercía el dominio opresor y era el blanco del juicio en el libro de Nahúm?",
+                options: [
+                    "El Imperio Babilonio (con capital en Babilonia)",
+                    "El Imperio Asirio (cuya capital era Nínive)",
+                    "El Imperio Persa (liderado por Ciro el Grande)",
+                    "El Imperio Egipcio (bajo el mando del Faraón Necao)"
+                ],
+                correct: 1,
+                explanation: "El Imperio Asirio, con su opulenta y sumamente sanguinaria capital Nínive, era el imperio opresor contra el cual Nahúm canta su profecía.",
+                pastorAdvice: "\"Hno, los asirios eran el azote de Oriente. ¡Sin duda es la B, la capital era Nínive!\""
+            },
+            {
+                question: "A nivel histórico y teológico, ¿con el libro de qué otro profeta se relaciona a Nahúm como una \"secuela\"?",
+                options: [
+                    "Con el libro del profeta Jonás",
+                    "Con el libro del profeta Isaías",
+                    "Con el libro del profeta Miqueas",
+                    "Con el libro del profeta Sofonías"
+                ],
+                correct: 0,
+                explanation: "Se le considera una secuela de Jonás: mientras un siglo antes Jonás pregonó el arrepentimiento y la misericordia en Nínive, Nahúm anuncia que el juicio final ha llegado al haber vuelto Asiria a la maldad.",
+                pastorAdvice: "\"Este enigma es una joya teológica: Jonás los perdonó antes, Nahúm los condena ahora. ¡Es la A!\""
+            },
+            {
+                question: "¿Qué rey asirio se menciona en el texto como el responsable de capturar la ciudad de Tebas en el año 663 a.C.?",
+                options: [
+                    "El rey Senaquerib",
+                    "El rey Sargón II",
+                    "El rey Tiglat-pileser III",
+                    "El rey Asurbanipal"
+                ],
+                correct: 3,
+                explanation: "El rey Asurbanipal conquistó Tebas (No-Amón). El profeta evoca este hecho del pasado (Nahúm 3:8) para demostrar que Nínive tampoco es indestructible.",
+                pastorAdvice: "\"Esa es arqueología pura. Asurbanipal fue quien asoló Tebas en el 663 a.C. Marca la D.\""
+            },
+            {
+                question: "Sabiendo que la profecía se sitúa inicialmente entre los años 660 y 650 a.C., ¿aproximadamente cuántos años pasaron hasta que se cumplió con la caída de Nínive en el 612 a.C.?",
+                options: [
+                    "Apenas unos 5 a 10 años (una respuesta casi inmediata)",
+                    "Aproximadamente entre 38 y 48 años (casi medio siglo de espera)",
+                    "Alrededor de 120 a 130 años (más de un siglo completo)",
+                    "Exactamente 200 años (dos siglos exactos de paciencia)"
+                ],
+                correct: 1,
+                explanation: "La profecía se sitúa históricamente entre el 660 y 650 a.C. y se cumplió en el 612 a.C., lo que significa que pasaron entre 38 y 48 años (casi medio siglo) de fiel espera por parte de Judá.",
+                pastorAdvice: "\"¡Echa cuentas, hno! Si restas 612 a 660 o 650... nos da entre 38 y 48 años. ¡La opción B es matemáticamente santa!\""
+            },
+            {
+                question: "Aunque el mensaje del libro es un juicio contra una nación extranjera, ¿a cuál de los dos reinos del pueblo de Dios consolaba y apoyaba la actividad de Nahúm?",
+                options: [
+                    "Al reino de Judá",
+                    "Al reino del Norte (Israel)",
+                    "Al reino de Samaria",
+                    "Al reino de Edom"
+                ],
+                correct: 0,
+                explanation: "La profecía consolaba y apoyaba las esperanzas del reino del Sur (Judá), que sufría la agobiante opresión asiria en ese periodo.",
+                pastorAdvice: "\"¡Judá, hermano! Las tribus de Israel ya estaban en el exilio norteño. Consola a Judá, la opción A.\""
+            },
+            {
+                question: "¿Cuál es el significado del nombre Nahúm y por qué resulta complementario para su mensaje?",
+                options: [
+                    "Significa \"consuelo\", porque traía alivio al pueblo de Judá que sufría bajo opresión",
+                    "Significa \"venganza\", porque anuncia la destrucción implacable de los asirios",
+                    "Significa \"tempestad\", debido a que describe vientos y torbellinos divinos",
+                    "Significa \"silencio\", porque anticipa el vacío desolador de Nínive"
+                ],
+                correct: 0,
+                explanation: "Nahúm significa \"consuelo\". Es complementario porque el fin del opresor traía alivio de dolor al pueblo oprimido.",
+                pastorAdvice: "\"Un nombre precioso: Nahúm es 'consuelo' para los fieles y asolamiento para el soberbio. Ve por la opción A.\""
+            },
+            {
+                question: "Con respecto a la geografía de su ministerio, ¿qué relación proponen algunos entre el nombre del profeta y la región de Galilea?",
+                options: [
+                    "Sugieren que el nombre de la ciudad galilea Capernaúm deriva del hebreo y significa \"aldea de Nahúm\"",
+                    "Proponen que Nahúm fue un pescador nativo del Mar de Galilea",
+                    "Indican que fundó un monte monástico en la Galilea antigua",
+                    "Afirman que Galilea era la capital administrativa del profeta"
+                ],
+                correct: 0,
+                explanation: "Existe la hipótesis de que Capernaúm significa literalmente \"aldea de Nahúm\" (Kfar Nahum), vinculando al profeta con la zona norteña de Galilea.",
+                pastorAdvice: "\"¿Capernaúm? Sí, proviene de 'Aldea de Nahúm'. ¡Un misterio maravilloso de la etimología hebrea! Opción A.\""
+            },
+            {
+                question: "Frente a la postura de algunos críticos modernos, ¿por qué es incorrecto catalogar a Nahúm simplemente como un \"nacionalista inflexible movido por el odio y la venganza\"?",
+                options: [
+                    "Porque amaba en secreto la cultura asiria y deseaba su conversión",
+                    "Porque habla como un verdadero profeta de Yahvé, consciente de la soberanía y justicia divinas, representando el clamor legítimo de las víctimas",
+                    "Porque en realidad Nahúm era babilónico y defendía intereses extranjeros",
+                    "Porque sus cartas describen su profunda amistad personal con gobernantes de Nínive"
+                ],
+                correct: 1,
+                explanation: "Nahúm no habla por despecho personal u odio infundado, sino que canaliza la justicia divina ante las atrocidades del imperio, proclamando que Dios defiende al desvalido.",
+                pastorAdvice: "\"Hno, la justicia divina no es odio nacionalista, es soberanía moral de Dios. Claramente es la B.\""
+            },
+            {
+                question: "¿Qué géneros y subgéneros literarios se encuentran entrelazados en el libro de Nahúm?",
+                options: [
+                    "Parábolas alegóricas agrícolas, epístolas pastorales y leyes levíticas",
+                    "Un himno de apertura, oráculos de salvación dirigidos a Judá y cantos de escarnio dirigidos a Nínive",
+                    "Crónicas genealógicas, apocalipsis con visiones monstruosas y correspondencia diplomática",
+                    "Lamentaciones acrósticas, sentencias de sabiduría clásica y cantos nupciales profanos"
+                ],
+                correct: 1,
+                explanation: "El libro se compone de un majestuoso himno de apertura (1:2-8), oráculos consoladores para Judá y cáusticos cantos de burla/juicio dirigidos a la caída de Nínive.",
+                pastorAdvice: "\"Nahúm es un artista de la lírica. Usa un himno introductorio, alivio para Judá y burlas a Nínive. ¡Apuesta por la B!\""
+            },
+            {
+                question: "¿Cuántos capítulos componen el libro de Nahúm y cómo se divide estructuralmente su mensaje?",
+                options: [
+                    "Tiene 3 capítulos: el cap. 1 presenta un himno de juicio, y los caps. 2 y 3 describen la caída de Nínive",
+                    "Tiene 5 capítulos divididos en lamentos individuales del profeta",
+                    "Tiene 1 capítulo corrido escrito en forma de misiva imperial",
+                    "Tiene 12 capítulos correspondientes a las doce tribus de la dispersión"
+                ],
+                correct: 0,
+                explanation: "Nahúm consta de 3 capítulos: el primero es un preludio himnológico del juicio y la misericordia, mientras que los restantes relatan de manera poética y vívida el asedio y ruina asiria.",
+                pastorAdvice: "\"Son tres capítulos cortos pero llenos de fuego y poesía bíblica. El 1 es himno; 2 y 3 el juicio. Opción A.\""
+            },
+            {
+                question: "¿Qué dos imágenes extraídas de la naturaleza utiliza el profeta Nahúm de forma original y muy desarrollada en sus versos?",
+                options: [
+                    "La del águila herida y el desierto de sal",
+                    "La del oso salvaje y la higuera sin frutos",
+                    "Las imágenes del león y de la langosta",
+                    "La de la paloma sin nido y la tormenta de fuego"
+                ],
+                correct: 2,
+                explanation: "Nahúm utiliza de forma brillante y original la metáfora del león (con su guarida destrozada) y las langostas (representando los oficiales y ejércitos invasores).",
+                pastorAdvice: "\"¡Rooaaar! Las imágenes del león de Nínive y el enjambre de langostas están detalladas magníficamente. Opción C.\""
+            },
+            {
+                question: "¿Cuál es el mensaje central del libro de Nahúm respecto al destino de los imperios tiranos?",
+                options: [
+                    "Que Dios es indiferente al mal terrenal y juzga solo en la otra vida",
+                    "Que los imperios tiranos persistirán a menos que Judá cree alianzas con egipto",
+                    "Que el Señor de la historia no es indiferente a la opresión, y que todo poder político basado en la violencia tiene sus días contados",
+                    "Que la historia humana carece de dirección moral y los reinos caen por pura suerte"
+                ],
+                correct: 2,
+                explanation: "Nahúm reafirma la soberanía ética de Dios en la historia humana: los imperios violentos, abusivos e injustos caerán irremediablemente.",
+                pastorAdvice: "\"El Señor de la historia todo lo ve. La tiranía y la opresión siempre tienen fecha de caducidad divina. La C, amado.\""
+            },
+            {
+                question: "Según el himno de apertura y el desarrollo del libro, ¿qué atributos contradictorios a simple vista se resaltan del carácter de Dios?",
+                options: [
+                    "Es celoso, vengador y no deja al culpable sin castigo, pero a la vez es tardo para la ira, paciente y refugio de los que en Él confían",
+                    "Es un ser local sin control de imperios fuera de la geografía judía",
+                    "Es de carácter pasivo y solo castiga de forma aleatoria",
+                    "Es sumamente implacable con sus siervos, pero muestra una paciencia ilimitada con los tiranos extranjeros"
+                ],
+                correct: 0,
+                explanation: "El libro retrata la paradoja de la justicia divina: Dios ejerce ira sobre la iniquidad obstinada pero guarda una bondad y paciencia inmensas para con los suyos.",
+                pastorAdvice: "\"Él es fuego consumidor y escudo de paz. Vengador para el tirano, pero refugio para el que le busca. ¡La opción A!\""
+            },
+            {
+                question: "¿Qué enseña la teología de Nahúm sobre el poder de las naciones y el control de la historia?",
+                options: [
+                    "Que la historia es dirigida enteramente por los astros y el azar mundano",
+                    "Que Dios es soberano absoluto sobre todas las naciones y que los eventos históricos no ocurren por mera casualidad",
+                    "Que la nación con el ejército más dotado tecnológicamente posee la aprobación divina",
+                    "Que Dios abandona los eventos terrenales en el libre albedrío incontrolado"
+                ],
+                correct: 1,
+                explanation: "Nos instruye que Dios domina toda la geopolítica de la tierra. Los imperios no caen por meras coincidencias de poderío, sino bajo el peso moral de la justicia soberana.",
+                pastorAdvice: "\"La historia humana no va a la deriva. Dios tiene las riendas del universo y del tiempo. ¡Sin duda es la B, hermano!\""
+            },
+            {
+                question: "¿Cómo aborda el libro el concepto del \"pecado corporativo\" de una sociedad o nación?",
+                options: [
+                    "Sostiene que Dios solo juzga los deslices privados e individuales, ignorando la moral colectiva",
+                    "Establece que el pecado colectivo (belicismo, crueldad, comercio engañoso) no quedará sin castigo, atrayendo la desaprobación de Dios",
+                    "Argumenta que las naciones pueden expiar pecados corporativos pagando tributos económicos al templo",
+                    "Considera que el pecado de los gobernantes no afecta de ningún modo al resto de su comunidad"
+                ],
+                correct: 1,
+                explanation: "Nahúm muestra que el pecado colectivo e institucionalizado (como el orgullo nacional, engaño mercantil e injusticias bélicas asirias) tiene un límite de gracia antes del juicio divino.",
+                pastorAdvice: "\"Las injusticias sociales y la corrupción de toda una nación ofenden a Dios directamente. Eso es pecado corporativo. Opción B.\""
+            },
+            {
+                question: "¿Qué principio teológico del libro de Nahúm permanece vigente para la iglesia respecto a su postura frente a los sistemas y regímenes del mundo?",
+                options: [
+                    "La iglesia debe unirse a los gobiernos de fuerza militar para imponer su dogma de fe",
+                    "Recuerda que Dios no es indiferente a la maldad y que el triunfo final de Dios sobre la tiranía y la injusticia es seguro",
+                    "La iglesia no debe protestar ni juzgar, pues los abusos se castigarán únicamente en la escatología final",
+                    "Enseña que los creyentes deben temer y someterse espiritualmente ante los tiranos injustos"
+                ],
+                correct: 1,
+                explanation: "Nahúm nos recuerda que la iglesia no debe desesperarse ante la injusticia secular ni aliarse con ella, ya que Dios intervendrá de manera soberana y triunfante sobre el mal.",
+                pastorAdvice: "\"Ningún dictador o imperio de este siglo asusta al Señor de la historia. El triunfo de la justicia divina es seguro. ¡Es la B!\""
+            },
+            {
+                question: "¿Qué enseña Nahúm a los creyentes que están atravesando por dificultades, crisis u opresión?",
+                options: [
+                    "Les enseña a esperar con fidelidad, recordando que el Señor es bueno, sirve de fortaleza en el día de la angustia y conoce a los que en Él se refugian",
+                    "Les dice que las crisis demuestran la total desatención o el castigo definitivo de la fe",
+                    "Les instruye a recurrir a la venganza militar y la hostilidad por iniciativa propia",
+                    "Les aconseja la rendición cobarde e incondicional ante las perversidades del opresor"
+                ],
+                correct: 0,
+                explanation: "El profeta llama a la calma y a la fidelidad confiando en Nahúm 1:7: 'Jehová es bueno, fortaleza en el día de la angustia; y conoce a los que en él confían'.",
+                pastorAdvice: "\"Nahúm 1:7 es uno de los mejores bálsamos de consuelo de toda la Biblia. Fortaleza en la tormenta. Opción A.\""
+            },
+            {
+                question: "¿Cómo se conecta teológicamente el mensaje de Nahúm con la persona de Jesucristo y el Evangelio?",
+                options: [
+                    "Afirma literalmente la venida de Jesús como un militar que conquistaría la antigua capital asiria",
+                    "Las promesas de Nahúm sobre la derrota del mal y la proclamación de paz anticipan la obra de la cruz, donde Cristo vence a los poderes enemigos",
+                    "Nahúm enseña que el Evangelio es secundario e irrelevante frente a la espada terrenal",
+                    "Niega la validez de la gracia exigiendo sacrificios constantes para calmar la ira soberana"
+                ],
+                correct: 1,
+                explanation: "La cruz representa el golpe definitivo contra el imperio espiritual de las tinieblas. La destrucción del mal y el anuncio de paz que describe Nahúm (1:15) se consuman con la victoria pascual de Jesús.",
+                pastorAdvice: "\"Hno, la derrota de los imperios perversos en el Antiguo Testamento prefigura la derrota de Satanás y la cruz de Cristo. ¡Llegamos a la meta de fe, es la B!\""
+            }
+        ];
+
+        // SOBERANÍA DINÁMICA: Todas las 18 preguntas son jugables
+        const totalLevels = questionsData.length; // 18 pasos
+
+        // VARIABLES DE ESTADO DEL JUEGO
+        let currentLevel = 0; 
+        let selectedIdx = null;
+        let isAnswerLocked = false;
+        let lifelines = {
+            fiftyFifty: true,
+            phone: true,
+            audience: true
+        };
+        let isMuted = false;
+        let audioCtx = null;
+
+        /**
+         * FUNCIÓN DE PROPORCIÓN CLAVE: 
+         * Mapea un índice de paso 'i' (0 a N-1) proporcionalmente sobre la lista 'faithLadder' (0 a L-1).
+         * Esto garantiza la distribución exacta de los elementos sin generar undefined, incluso con
+         * cambios o reducciones en la lista 'faithLadder'.
+         */
+        function getFaithLevelName(stepIndex) {
+            const N = totalLevels; // 18 preguntas
+            const L = faithLadder.length; // Niveles de fe definidos por el usuario (ej. 5 o 16)
+            
+            if (N <= 1) return faithLadder[0] || "Fe Celestial";
+            if (L === 0) return `Paso de Fe ${stepIndex + 1}`;
+            
+            // Mapeo proporcional simétrico del índice
+            const mappedIndex = Math.min(Math.floor((stepIndex / (N - 1)) * (L - 1)), L - 1);
+            return faithLadder[mappedIndex];
+        }
+
+        // INICIALIZACIÓN DE ESCALA DE FE LATERAL DINÁMICA
+        function buildLadder() {
+            const container = document.getElementById('ladder-container');
+            container.innerHTML = '';
+            
+            // Renderizamos dinámicamente según la cantidad total de preguntas (18)
+            for (let i = 0; i < totalLevels; i++) {
+                const item = document.createElement('div');
+                item.id = `ladder-${i}`;
+                item.className = "ladder-item flex justify-between items-center py-1 px-3 rounded border text-slate-400 border-yellow-500/10 text-[11px]";
+                
+                // Hitos proporcionales para estrellas decorativas
+                const isMilestone = i === 3 || i === totalLevels - 1 || i === 10;
+                const starIcon = isMilestone ? '<i class="fa-solid fa-star text-yellow-500 mr-1"></i>' : '';
+                
+                // Se obtiene el nombre del nivel mapeado proporcionalmente
+                const levelName = getFaithLevelName(i);
+                
+                item.innerHTML = `
+                    <span class="font-bold">${starIcon}${i + 1} ♦</span>
+                    <span class="font-semibold truncate max-w-[150px] text-right">${levelName}</span>
+                `;
+                container.appendChild(item);
+            }
+        }
+
+        // TEXTOS DE INICIO DINÁMICOS
+        function initStartScreen() {
+            document.getElementById('start-levels-count').innerText = totalLevels;
+            document.getElementById('start-max-rank').innerText = getFaithLevelName(totalLevels - 1);
+        }
+
+        // WEB AUDIO API SYNTHESIZER FOR SOUND EFFECTS
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSynthSound(type) {
+            if (isMuted) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            
+            switch(type) {
+                case 'click':
+                    const oscClick = audioCtx.createOscillator();
+                    const gainClick = audioCtx.createGain();
+                    oscClick.type = 'sine';
+                    oscClick.frequency.setValueAtTime(350, now);
+                    oscClick.frequency.exponentialRampToValueAtTime(180, now + 0.1);
+                    gainClick.gain.setValueAtTime(0.08, now);
+                    gainClick.gain.linearRampToValueAtTime(0.01, now + 0.1);
+                    oscClick.connect(gainClick);
+                    gainClick.connect(audioCtx.destination);
+                    oscClick.start(now);
+                    oscClick.stop(now + 0.1);
+                    break;
+
+                case 'lock':
+                    const oscL1 = audioCtx.createOscillator();
+                    const oscL2 = audioCtx.createOscillator();
+                    const gainL = audioCtx.createGain();
+                    oscL1.type = 'sawtooth';
+                    oscL2.type = 'sine';
+                    oscL1.frequency.setValueAtTime(130, now);
+                    oscL2.frequency.setValueAtTime(162, now);
+                    gainL.gain.setValueAtTime(0.12, now);
+                    gainL.gain.linearRampToValueAtTime(0.01, now + 0.6);
+                    oscL1.connect(gainL);
+                    oscL2.connect(gainL);
+                    gainL.connect(audioCtx.destination);
+                    oscL1.start(now);
+                    oscL2.start(now);
+                    oscL1.stop(now + 0.6);
+                    oscL2.stop(now + 0.6);
+                    break;
+
+                case 'correct':
+                    playChord([523, 659, 784, 987], 'triangle', 0.8, 0.15);
+                    break;
+
+                case 'wrong':
+                    const oscW1 = audioCtx.createOscillator();
+                    const oscW2 = audioCtx.createOscillator();
+                    const gainW = audioCtx.createGain();
+                    oscW1.type = 'sawtooth';
+                    oscW2.type = 'sawtooth';
+                    oscW1.frequency.setValueAtTime(220, now);
+                    oscW1.frequency.linearRampToValueAtTime(130, now + 0.8);
+                    oscW2.frequency.setValueAtTime(215, now);
+                    oscW2.frequency.linearRampToValueAtTime(125, now + 0.8);
+                    gainW.gain.setValueAtTime(0.15, now);
+                    gainW.gain.linearRampToValueAtTime(0.01, now + 0.8);
+                    oscW1.connect(gainW);
+                    oscW2.connect(gainW);
+                    gainW.connect(audioCtx.destination);
+                    oscW1.start(now);
+                    oscW2.start(now);
+                    oscW1.stop(now + 0.8);
+                    oscW2.stop(now + 0.8);
+                    break;
+
+                case 'win':
+                    let notes = [523, 659, 784, 1046, 1318];
+                    notes.forEach((freq, idx) => {
+                        setTimeout(() => {
+                            const osc = audioCtx.createOscillator();
+                            const gain = audioCtx.createGain();
+                            osc.type = 'sine';
+                            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                            gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 1.2);
+                            osc.connect(gain);
+                            gain.connect(audioCtx.destination);
+                            osc.start();
+                            osc.stop(audioCtx.currentTime + 1.2);
+                        }, idx * 120);
+                    });
+                    break;
+            }
+        }
+
+        function playChord(frequencies, type, duration, volume) {
+            initAudio();
+            const now = audioCtx.currentTime;
+            frequencies.forEach(f => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(f, now);
+                gain.gain.setValueAtTime(volume / frequencies.length, now);
+                gain.gain.linearRampToValueAtTime(0.005, now + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + duration);
+            });
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const icon = document.getElementById('sound-icon');
+            if (isMuted) {
+                icon.className = "fa-solid fa-volume-xmark text-red-400";
+            } else {
+                icon.className = "fa-solid fa-volume-high text-yellow-400";
+                playSynthSound('click');
+            }
+        }
+
+        // CONTROL DEL JUEGO
+
+        function startGame() {
+            initAudio();
+            playSynthSound('click');
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+            buildLadder();
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            selectedIdx = null;
+            isAnswerLocked = false;
+            
+            const btnLock = document.getElementById('btn-lock');
+            btnLock.disabled = true;
+            btnLock.innerText = "DISCERNIR RESPUESTA";
+            btnLock.classList.remove('hidden');
+            btnLock.classList.add('from-yellow-600', 'to-yellow-800');
+
+            document.getElementById('panel-feedback').classList.add('hidden');
+
+            const currentQ = questionsData[currentLevel];
+            
+            document.getElementById('question-text').innerText = currentQ.question;
+            document.getElementById('question-progress').innerText = `${currentLevel + 1} / ${totalLevels}`;
+            
+            // Saca dinámicamente el nivel de fe para la pregunta actual
+            document.getElementById('current-faith-badge').innerText = getFaithLevelName(currentLevel);
+
+            // Renderizar opciones
+            for(let i = 0; i < 4; i++) {
+                const optBtn = document.getElementById(`opt-${i}`);
+                const optText = document.getElementById(`opt-text-${i}`);
+                
+                optText.innerText = currentQ.options[i];
+                
+                optBtn.className = "millionaire-btn p-4 text-left font-semibold flex items-center text-slate-200 transition";
+                optBtn.disabled = false;
+            }
+
+            updatePrizesLadder();
+        }
+
+        function updatePrizesLadder() {
+            for(let i = 0; i < totalLevels; i++) {
+                const item = document.getElementById(`ladder-${i}`);
+                if (!item) continue;
+                
+                item.className = "ladder-item flex justify-between items-center py-1 px-3 rounded border text-slate-400 border-yellow-500/10 text-[11px]";
+                
+                const isMilestone = i === 3 || i === totalLevels - 1 || i === 10;
+                if (isMilestone) {
+                    item.classList.add('text-yellow-500/80');
+                }
+
+                if (i === currentLevel) {
+                    item.className = "ladder-item flex justify-between items-center py-1.5 px-3 rounded border text-slate-100 border-yellow-400 active bg-purple-950 font-bold text-xs scale-102 shadow-[0_0_15px_rgba(254,215,0,0.25)]";
+                    
+                    setTimeout(() => {
+                        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                } else if (i < currentLevel) {
+                    item.classList.add('text-yellow-500/40', 'bg-slate-950/20', 'line-through');
+                }
+            }
+        }
+
+        function selectOption(idx) {
+            if (isAnswerLocked) return;
+            playSynthSound('click');
+            selectedIdx = idx;
+
+            for(let i = 0; i < 4; i++) {
+                const optBtn = document.getElementById(`opt-${i}`);
+                if (!optBtn.classList.contains('eliminated')) {
+                    optBtn.classList.remove('selected');
+                }
+            }
+
+            document.getElementById(`opt-${idx}`).classList.add('selected');
+            document.getElementById('btn-lock').disabled = false;
+        }
+
+        function lockAnswer() {
+            if (selectedIdx === null || isAnswerLocked) return;
+            isAnswerLocked = true;
+            playSynthSound('lock');
+
+            const btnLock = document.getElementById('btn-lock');
+            btnLock.disabled = true;
+            btnLock.innerText = "ORANDO POR LA RESPUESTA...";
+
+            for(let i = 0; i < 4; i++) {
+                document.getElementById(`opt-${i}`).disabled = true;
+            }
+
+            setTimeout(() => {
+                revealResult();
+            }, 1500);
+        }
+
+        function revealResult() {
+            const currentQ = questionsData[currentLevel];
+            const correctIdx = currentQ.correct;
+            
+            const selectedBtn = document.getElementById(`opt-${selectedIdx}`);
+            const correctBtn = document.getElementById(`opt-${correctIdx}`);
+
+            document.getElementById('btn-lock').classList.add('hidden');
+
+            if (selectedIdx === correctIdx) {
+                selectedBtn.classList.remove('selected');
+                selectedBtn.classList.add('correct');
+                playSynthSound('correct');
+
+                const badge = document.getElementById('feedback-badge');
+                badge.className = "px-2.5 py-0.5 rounded text-xs font-bold uppercase bg-emerald-500 text-slate-950 shadow-[0_0_10px_rgba(46,204,113,0.3)]";
+                badge.innerText = "¡ILUMINADO!";
+                
+                document.getElementById('feedback-text').innerText = currentQ.explanation;
+                document.getElementById('panel-feedback').classList.remove('hidden');
+            } else {
+                selectedBtn.classList.remove('selected');
+                selectedBtn.classList.add('wrong');
+                correctBtn.classList.add('correct');
+                playSynthSound('wrong');
+
+                setTimeout(() => {
+                    endGame(false);
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentLevel < totalLevels - 1) {
+                currentLevel++;
+                loadQuestion();
+            } else {
+                endGame(true);
+            }
+        }
+
+        // COMODINES SACRALIZADOS
+
+        function useFiftyFifty() {
+            if (!lifelines.fiftyFifty || isAnswerLocked) return;
+            playSynthSound('click');
+            lifelines.fiftyFifty = false;
+
+            const btn = document.getElementById('lifeline-fifty');
+            btn.disabled = true;
+            btn.className = "px-3 h-10 rounded-lg border border-slate-700 bg-slate-800 text-slate-500 font-bold text-xs flex items-center justify-center opacity-30 cursor-not-allowed";
+
+            const currentQ = questionsData[currentLevel];
+            const correctIdx = currentQ.correct;
+
+            let wrongIdxs = [];
+            for (let i = 0; i < 4; i++) {
+                if (i !== correctIdx) wrongIdxs.push(i);
+            }
+
+            wrongIdxs.sort(() => Math.random() - 0.5);
+            const toEliminate = wrongIdxs.slice(0, 2);
+
+            toEliminate.forEach(idx => {
+                const optBtn = document.getElementById(`opt-${idx}`);
+                optBtn.classList.add('eliminated');
+                optBtn.disabled = true;
+                document.getElementById(`opt-text-${idx}`).innerText = "---";
+            });
+
+            if (toEliminate.includes(selectedIdx)) {
+                selectedIdx = null;
+                document.getElementById('btn-lock').disabled = true;
+            }
+        }
+
+        function useAudiencePoll() {
+            if (!lifelines.audience || isAnswerLocked) return;
+            playSynthSound('click');
+            lifelines.audience = false;
+
+            const btn = document.getElementById('lifeline-audience');
+            btn.disabled = true;
+            btn.className = "w-11 h-10 rounded-lg border border-slate-700 bg-slate-800 text-slate-500 text-sm flex items-center justify-center opacity-30 cursor-not-allowed";
+
+            const currentQ = questionsData[currentLevel];
+            const correctIdx = currentQ.correct;
+
+            let percentages = [0, 0, 0, 0];
+            let remaining = 100;
+
+            const correctPercent = Math.floor(Math.random() * 26) + 52;
+            percentages[correctIdx] = correctPercent;
+            remaining -= correctPercent;
+
+            let activeWrongs = [];
+            for (let i = 0; i < 4; i++) {
+                if (i !== correctIdx) {
+                    const optBtn = document.getElementById(`opt-${i}`);
+                    if (!optBtn.classList.contains('eliminated')) {
+                        activeWrongs.push(i);
+                    }
+                }
+            }
+
+            if (activeWrongs.length === 1) {
+                percentages[activeWrongs[0]] = remaining;
+            } else {
+                const firstShare = Math.floor(Math.random() * (remaining - 4)) + 2;
+                percentages[activeWrongs[0]] = firstShare;
+                percentages[activeWrongs[1]] = remaining - firstShare;
+            }
+
+            for (let i = 0; i < 4; i++) {
+                const optBtn = document.getElementById(`opt-${i}`);
+                if (optBtn.classList.contains('eliminated')) {
+                    document.getElementById(`poll-label-${i}`).innerText = "(Eliminado por Intercesión)";
+                    document.getElementById(`poll-val-${i}`).innerText = "0%";
+                    document.getElementById(`poll-bar-${i}`).style.width = "0%";
+                } else {
+                    document.getElementById(`poll-label-${i}`).innerText = currentQ.options[i].substring(0, 32) + "...";
+                    document.getElementById(`poll-val-${i}`).innerText = `${percentages[i]}%`;
+                    document.getElementById(`poll-bar-${i}`).style.width = `${percentages[i]}%`;
+                }
+            }
+
+            document.getElementById('modal-audience').classList.remove('hidden');
+        }
+
+        function usePhoneAFriend() {
+            if (!lifelines.phone || isAnswerLocked) return;
+            playSynthSound('click');
+            lifelines.phone = false;
+
+            const btn = document.getElementById('lifeline-phone');
+            btn.disabled = true;
+            btn.className = "w-11 h-10 rounded-lg border border-slate-700 bg-slate-800 text-slate-500 text-sm flex items-center justify-center opacity-30 cursor-not-allowed";
+
+            const currentQ = questionsData[currentLevel];
+            const dialogue = currentQ.pastorAdvice || "\"Hijo, te encomiendo orar un poco más, pero creo firmemente que la respuesta correcta es la opción A o B.\"";
+
+            document.getElementById('phone-calling').classList.remove('hidden');
+            document.getElementById('phone-connected').classList.add('hidden');
+            document.getElementById('btn-phone-action').disabled = true;
+            document.getElementById('btn-phone-action').innerText = "CONECTANDO...";
+            
+            document.getElementById('modal-phone').classList.remove('hidden');
+
+            setTimeout(() => {
+                document.getElementById('phone-calling').classList.add('hidden');
+                document.getElementById('phone-connected').classList.remove('hidden');
+                document.getElementById('phone-dialogue').innerText = dialogue;
+                document.getElementById('btn-phone-action').disabled = false;
+                document.getElementById('btn-phone-action').innerText = "AMÉN, ENTENDIDO";
+            }, 2000);
+        }
+
+        function closeModal(modalId) {
+            playSynthSound('click');
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // PANTALLAS DE FINALIZACIÓN
+
+        function endGame(isVictory) {
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-end').classList.remove('hidden');
+
+            const iconContainer = document.getElementById('end-icon-container');
+            const title = document.getElementById('end-title');
+            const subtitle = document.getElementById('end-subtitle');
+            const prizeBadge = document.getElementById('end-prize');
+            const explanationBox = document.getElementById('end-fail-explanation');
+            const screenEndBox = document.getElementById('screen-end');
+
+            explanationBox.classList.add('hidden');
+
+            if (isVictory) {
+                playSynthSound('win');
+                screenEndBox.className = "max-w-lg w-full bg-slate-900/95 border-2 border-yellow-500 rounded-2xl p-8 text-center backdrop-blur-xl shadow-[0_0_55px_rgba(254,215,0,0.4)] space-y-6";
+                iconContainer.className = "w-24 h-24 mx-auto rounded-full flex items-center justify-center bg-yellow-500/20 border-4 border-yellow-500 shadow-[0_0_20px_rgba(254,215,0,0.5)]";
+                iconContainer.innerHTML = `<i class="fa-solid fa-angles-up text-5xl text-yellow-400 animate-pulse"></i>`;
+                
+                const finalRank = getFaithLevelName(totalLevels - 1);
+                title.innerText = `¡ALCANZASTE EL RANGO DE ${finalRank.toUpperCase()}!`;
+                title.className = "text-2xl md:text-3xl font-black title-font text-yellow-400";
+                subtitle.innerText = "¡Santo, Santo! Tu sabiduría exegética sobre las profecías de Nahúm ha asombrado a la congregación entera. ¡Tu fe es inamovible!";
+                prizeBadge.innerText = `${finalRank} (Sabio de Nahúm)`;
+            } else {
+                screenEndBox.className = "max-w-lg w-full bg-slate-900/95 border-2 border-red-500/40 rounded-2xl p-8 text-center backdrop-blur-xl shadow-2xl space-y-6";
+                iconContainer.className = "w-24 h-24 mx-auto rounded-full flex items-center justify-center bg-red-500/10 border-4 border-red-500/50";
+                iconContainer.innerHTML = `<i class="fa-solid fa-heart-crack text-4xl text-red-500 animate-pulse"></i>`;
+                
+                title.innerText = "¡Faltó Estudio y Oración!";
+                title.className = "text-2xl font-extrabold title-font text-red-500";
+                subtitle.innerText = "Has errado en el discernimiento teológico. Nínive ha caído y te has quedado estancado en el camino.";
+                
+                if (currentLevel === 0) {
+                    prizeBadge.innerText = `${getFaithLevelName(0)} (Rango Base)`;
+                } else {
+                    prizeBadge.innerText = getFaithLevelName(currentLevel - 1);
+                }
+
+                const currentQ = questionsData[currentLevel];
+                explanationBox.innerHTML = `
+                    <p class="font-bold text-red-400 mb-1"><i class="fa-solid fa-scroll"></i> Revelación de Apoyo para la Próxima:</p>
+                    <p class="text-xs text-slate-300 leading-relaxed">${currentQ.explanation}</p>
+                `;
+                explanationBox.classList.remove('hidden');
+            }
+        }
+
+        function resetGame() {
+            playSynthSound('click');
+            currentLevel = 0;
+            lifelines = {
+                fiftyFifty: true,
+                phone: true,
+                audience: true
+            };
+
+            const resetBtn = (id, textHtml) => {
+                const btn = document.getElementById(id);
+                btn.disabled = false;
+                btn.className = "w-11 h-10 rounded-lg border border-yellow-500/40 bg-purple-950/80 hover:bg-yellow-400 hover:text-slate-950 transition text-yellow-400 text-sm flex items-center justify-center shadow-lg";
+                btn.innerHTML = textHtml;
+            };
+
+            const resetBtnFifty = (id, textHtml) => {
+                const btn = document.getElementById(id);
+                btn.disabled = false;
+                btn.className = "px-3 h-10 rounded-lg border border-yellow-500/40 bg-purple-950/80 hover:bg-yellow-400 hover:text-slate-950 transition text-yellow-400 font-black text-[11px] flex items-center justify-center shadow-lg";
+                btn.innerHTML = textHtml;
+            };
+
+            resetBtnFifty('lifeline-fifty', '50:50');
+            resetBtn('lifeline-phone', '<i class="fa-solid fa-phone"></i>');
+            resetBtn('lifeline-audience', '<i class="fa-solid fa-users"></i>');
+
+            document.getElementById('screen-end').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        // Inicializar textos dinámicamente al cargar el DOM
+        window.addEventListener('DOMContentLoaded', () => {
+            initStartScreen();
+        });
+    </script>
+</body>
+</html>
