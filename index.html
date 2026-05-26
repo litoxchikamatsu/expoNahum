@@ -398,18 +398,18 @@
         // ESCALA DE LOS NIVELES DE FE (Puedes acortar o alargar esta lista libremente)
         // Ejemplo: Si dejas 5, 8 o 16 niveles, todas las preguntas de questionsData seguirán apareciendo
         const faithLadder = [
-            "Inmaduro en la fe",        // Pregunta 1
-            "Lector de las Escrituras", // Pregunta 2
-            "Discípula",               // Pregunta 3
-            "Servidora",                // Pregunta 4
-            "Seminarista",       // Pregunta 7
-            "Anciana Gobernante",      // Pregunta 8
-            "Ayudante de Profeta",       // Pregunta 9
-            "Profeta Menor",            // Pregunta 10
-            "Profeta Mayor",            // Pregunta 11
-            "Apóstol",                 // Pregunta 13
-            "Biblista",      // Pregunta 14
-            "Experto en Nahum"            // Pregunta 16
+            "Inmaduro en la fe",        
+            "Lector de las Escrituras", 
+            "Discípula",               
+            "Servidor/a",                
+            "Seminarista",       
+            "Ancian@ Gobernante",      
+            "Ayudante de Profeta",       
+            "Profeta Menor",            
+            "Profeta Mayor",            
+            "Apóstol",                 
+            "Biblista",
+            "Experto en Nahum"
         ];
 
         // CONFIGURACIÓN DE LAS 18 PREGUNTAS (Se muestran todas las 18 sin omitir ninguna)
@@ -677,7 +677,7 @@
                 item.className = "ladder-item flex justify-between items-center py-1 px-3 rounded border text-slate-400 border-yellow-500/10 text-[11px]";
                 
                 // Hitos proporcionales para estrellas decorativas
-                const isMilestone = i === 3 || i === totalLevels - 1 || i === 10;
+                const isMilestone = i === 5 || i === totalLevels - 1 || i === 11;
                 const starIcon = isMilestone ? '<i class="fa-solid fa-star text-yellow-500 mr-1"></i>' : '';
                 
                 // Se obtiene el nombre del nivel mapeado proporcionalmente
@@ -870,7 +870,7 @@
                 
                 item.className = "ladder-item flex justify-between items-center py-1 px-3 rounded border text-slate-400 border-yellow-500/10 text-[11px]";
                 
-                const isMilestone = i === 3 || i === totalLevels - 1 || i === 10;
+                const isMilestone = i === 5 || i === totalLevels - 1 || i === 11;
                 if (isMilestone) {
                     item.classList.add('text-yellow-500/80');
                 }
