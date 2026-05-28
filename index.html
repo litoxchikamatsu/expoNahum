@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¿Quién Quiere Ser Moldeado? - Edición Nahúm</title>
+    <title>¿Quién Quiere Ser Cuestionado? - Edición Nahúm</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome para iconos -->
@@ -116,8 +116,8 @@
                 <i class="fa-solid fa-dove text-yellow-400"></i>
             </div>
             <div>
-                <span class="text-xs text-yellow-400 uppercase tracking-widest block font-bold">La Trivia Celestial</span>
-                <h1 class="text-sm md:text-md font-bold text-white tracking-wide title-font">¿QUIÉN QUIERE SER MOLDEADO?</h1>
+                <span class="text-xs text-yellow-400 uppercase tracking-widest block font-bold">Laura Giraldo - Carlos Zuluaga - Reinaldo Vanegas - Carlos Correa</span>
+                <h1 class="text-sm md:text-md font-bold text-white tracking-wide title-font">¿QUIÉN QUIERE SER CUESTIONADO?</h1>
             </div>
         </div>
         
@@ -141,7 +141,7 @@
             </div>
             
             <h2 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-600 title-font mb-2">
-                ¿Quién Quiere Ser Moldeado?
+                ¿Quién Quiere Ser Cuestionado?
             </h2>
             <p class="text-yellow-400 font-bold uppercase tracking-widest text-sm mb-6">
                 Especial: El Clamor y la Profecía de Nahúm
@@ -164,7 +164,7 @@
             </div>
 
             <button onclick="startGame()" class="w-full py-4 bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 hover:from-yellow-400 hover:to-amber-500 text-slate-950 font-black text-lg rounded-xl shadow-[0_4px_25px_rgba(254,215,0,0.4)] transition transform active:scale-95 tracking-wider">
-                <i class="fa-solid fa-fire-flame-curved mr-2"></i> INICIAR CAMINO DE FE
+                <i class="fa-solid fa-fire-flame-curved mr-2"></i> INICIAR JUEGO
             </button>
         </div>
 
@@ -250,23 +250,23 @@
                             Explicación bíblica del contexto.
                         </p>
                         <button onclick="nextQuestion()" class="mt-2 w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg transition tracking-wider uppercase">
-                            SIGUIENTE PASO DE FE <i class="fa-solid fa-arrow-right ml-1"></i>
+                            SIGUIENTE PREGUNTA <i class="fa-solid fa-arrow-right ml-1"></i>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- TABLA LADO DERECHO - ESCALA DE NIVELES DE FE (1 COLUMNA) -->
+            <!-- TABLA LADO DERECHO - ESCALA DE CONOCIMIENTO (1 COLUMNA) -->
             <div class="bg-slate-900/90 border border-yellow-500/30 rounded-2xl p-4 space-y-3 max-h-[580px] flex flex-col">
-                <h3 class="text-xs uppercase tracking-widest text-yellow-400 font-black text-center border-b border-purple-500/30 pb-2">NIVELES DE FE</h3>
+                <h3 class="text-xs uppercase tracking-widest text-yellow-400 font-black text-center border-b border-purple-500/30 pb-2">ESCALA DE CONOCIMIENTO</h3>
                 
                 <div class="flex-grow overflow-y-auto custom-scrollbar pr-1 space-y-1 flex flex-col-reverse" id="ladder-container">
-                    <!-- Se inyectan dinámicamente los niveles de fe desde JavaScript -->
+                    <!-- Se inyectan dinámicamente los Escala de Conociminento desde JavaScript -->
                 </div>
 
                 <div class="bg-purple-950/40 border border-purple-500/10 rounded-lg p-2.5 text-[11px] text-slate-400 space-y-1">
-                    <p class="font-semibold text-slate-300"><i class="fa-solid fa-shield-halved text-yellow-400 mr-1"></i>Puntos de Gracia:</p>
-                    <p>Cada respuesta acertada consolida de forma segura tu rango espiritual.</p>
+                    <p class="font-semibold text-slate-300"><i class="fa-solid fa-shield-halved text-yellow-400 mr-1"></i>Puntos de Control:</p>
+                    <p>Cada respuesta acertada en este nivel consolida tu progreso y asegura tu rango mínimo en la escala.</p>
                 </div>
             </div>
         </div>
@@ -395,21 +395,27 @@
 
 
     <script>
-        // ESCALA DE LOS NIVELES DE FE (Puedes acortar o alargar esta lista libremente)
+        // ESCALA DE CONOCIMIENTO (Puedes acortar o alargar esta lista libremente)
         // Ejemplo: Si dejas 5, 8 o 16 niveles, todas las preguntas de questionsData seguirán apareciendo
-        const faithLadder = [
-            "Inmaduro en la fe",        
-            "Lector de las Escrituras", 
-            "Discípula",               
-            "Servidor/a",                
-            "Seminarista",       
-            "Ancian@ Gobernante",      
-            "Ayudante de Profeta",       
-            "Profeta Menor",            
-            "Profeta Mayor",            
-            "Apóstol",                 
-            "Biblista",
-            "Experto en Nahum"
+        const knowledgeLadder = [
+            "Algo he Oído de Nahúm",
+            "Algo he Oído de Nahúm",
+            "Algo he Oído de Nahúm",
+            "Algo he Oído de Nahúm",
+            "Algo he Oído de Nahúm",
+            "Se Cositas de Nahúm",
+            "Se Cositas de Nahúm",
+            "Se Cositas de Nahúm",
+            "Se Cositas de Nahúm",
+            "Se Cositas de Nahúm",
+            "Se Cositas de Nahúm",
+            "He Estudiado a Nahúm",
+            "He Estudiado a Nahúm",
+            "He Estudiado a Nahúm",
+            "He Estudiado a Nahúm",
+            "He Estudiado a Nahúm",
+            "He Estudiado a Nahúm",       
+            "Experto en Nahúm"
         ];
 
         // CONFIGURACIÓN DE LAS 18 PREGUNTAS (Se muestran todas las 18 sin omitir ninguna)
@@ -427,7 +433,7 @@
                 pastorAdvice: "\"Hno, los asirios eran el azote de Oriente. ¡Sin duda es la B, la capital era Nínive!\""
             },
             {
-                question: "A nivel histórico y teológico, ¿con el libro de qué otro profeta se relaciona a Nahúm como una \"secuela\"?",
+                question: "¿Con qué otro libro se relaciona a Nahúm como una \"secuela\"?",
                 options: [
                     "Con el libro del profeta Jonás",
                     "Con el libro del profeta Isaías",
@@ -451,7 +457,7 @@
                 pastorAdvice: "\"Esa es arqueología pura. Asurbanipal fue quien asoló Tebas en el 663 a.C. Marca la D.\""
             },
             {
-                question: "Sabiendo que la profecía se sitúa inicialmente entre los años 660 y 650 a.C., ¿aproximadamente cuántos años pasaron hasta que se cumplió con la caída de Nínive en el 612 a.C.?",
+                question: "Sabiendo que la profecía se sitúa inicialmente entre los años 660 y 650 a.C., ¿aproximadamente cuántos años pasaron hasta que se cumplió con la caída de Nínive?",
                 options: [
                     "Apenas unos 5 a 10 años (una respuesta casi inmediata)",
                     "Aproximadamente entre 38 y 48 años (casi medio siglo de espera)",
@@ -477,24 +483,24 @@
             {
                 question: "¿Cuál es el significado del nombre Nahúm y por qué resulta complementario para su mensaje?",
                 options: [
-                    "Significa \"consuelo\", porque traía alivio al pueblo de Judá que sufría bajo opresión",
-                    "Significa \"venganza\", porque anuncia la destrucción implacable de los asirios",
                     "Significa \"tempestad\", debido a que describe vientos y torbellinos divinos",
+                    "Significa \"venganza\", porque anuncia la destrucción implacable de los asirios",
+                    "Significa \"consuelo\", porque traía alivio al pueblo de Judá que sufría bajo opresión",
                     "Significa \"silencio\", porque anticipa el vacío desolador de Nínive"
                 ],
-                correct: 0,
+                correct: 2,
                 explanation: "Nahúm significa \"consuelo\". Es complementario porque el fin del opresor traía alivio de dolor al pueblo oprimido.",
                 pastorAdvice: "\"Un nombre precioso: Nahúm es 'consuelo' para los fieles y asolamiento para el soberbio. Ve por la opción A.\""
             },
             {
                 question: "Con respecto a la geografía de su ministerio, ¿qué relación proponen algunos entre el nombre del profeta y la región de Galilea?",
                 options: [
-                    "Sugieren que el nombre de la ciudad galilea Capernaúm deriva del hebreo y significa \"aldea de Nahúm\"",
                     "Proponen que Nahúm fue un pescador nativo del Mar de Galilea",
+                    "Sugieren que el nombre de la ciudad galilea Capernaúm deriva del hebreo y significa \"aldea de Nahúm\"",
                     "Indican que fundó un monte monástico en la Galilea antigua",
                     "Afirman que Galilea era la capital administrativa del profeta"
                 ],
-                correct: 0,
+                correct: 1,
                 explanation: "Existe la hipótesis de que Capernaúm significa literalmente \"aldea de Nahúm\" (Kfar Nahum), vinculando al profeta con la zona norteña de Galilea.",
                 pastorAdvice: "\"¿Capernaúm? Sí, proviene de 'Aldea de Nahúm'. ¡Un misterio maravilloso de la etimología hebrea! Opción A.\""
             },
@@ -514,11 +520,11 @@
                 question: "¿Qué géneros y subgéneros literarios se encuentran entrelazados en el libro de Nahúm?",
                 options: [
                     "Parábolas alegóricas agrícolas, epístolas pastorales y leyes levíticas",
-                    "Un himno de apertura, oráculos de salvación dirigidos a Judá y cantos de escarnio dirigidos a Nínive",
                     "Crónicas genealógicas, apocalipsis con visiones monstruosas y correspondencia diplomática",
+                    "Un himno de apertura, oráculos de salvación dirigidos a Judá y cantos de escarnio dirigidos a Nínive",
                     "Lamentaciones acrósticas, sentencias de sabiduría clásica y cantos nupciales profanos"
                 ],
-                correct: 1,
+                correct: 2,
                 explanation: "El libro se compone de un majestuoso himno de apertura (1:2-8), oráculos consoladores para Judá y cáusticos cantos de burla/juicio dirigidos a la caída de Nínive.",
                 pastorAdvice: "\"Nahúm es un artista de la lírica. Usa un himno introductorio, alivio para Judá y burlas a Nínive. ¡Apuesta por la B!\""
             },
@@ -535,7 +541,7 @@
                 pastorAdvice: "\"Son tres capítulos cortos pero llenos de fuego y poesía bíblica. El 1 es himno; 2 y 3 el juicio. Opción A.\""
             },
             {
-                question: "¿Qué dos imágenes extraídas de la naturaleza utiliza el profeta Nahúm de forma original y muy desarrollada en sus versos?",
+                question: "¿Cuáles son las dos imágenes extraídas de la naturaleza que el profeta Nahúm utiliza de forma original en sus versos?",
                 options: [
                     "La del águila herida y el desierto de sal",
                     "La del oso salvaje y la higuera sin frutos",
@@ -598,11 +604,11 @@
                 question: "¿Qué principio teológico del libro de Nahúm permanece vigente para la iglesia respecto a su postura frente a los sistemas y regímenes del mundo?",
                 options: [
                     "La iglesia debe unirse a los gobiernos de fuerza militar para imponer su dogma de fe",
-                    "Recuerda que Dios no es indiferente a la maldad y que el triunfo final de Dios sobre la tiranía y la injusticia es seguro",
+                    "Enseña que los creyentes deben temer y someterse espiritualmente ante los tiranos injustos",
                     "La iglesia no debe protestar ni juzgar, pues los abusos se castigarán únicamente en la escatología final",
-                    "Enseña que los creyentes deben temer y someterse espiritualmente ante los tiranos injustos"
+                    "Recuerda que Dios no es indiferente a la maldad y que el triunfo final de Dios sobre la tiranía y la injusticia es seguro"
                 ],
-                correct: 1,
+                correct: 3,
                 explanation: "Nahúm nos recuerda que la iglesia no debe desesperarse ante la injusticia secular ni aliarse con ella, ya que Dios intervendrá de manera soberana y triunfante sobre el mal.",
                 pastorAdvice: "\"Ningún dictador o imperio de este siglo asusta al Señor de la historia. El triunfo de la justicia divina es seguro. ¡Es la B!\""
             },
@@ -649,23 +655,23 @@
 
         /**
          * FUNCIÓN DE PROPORCIÓN CLAVE: 
-         * Mapea un índice de paso 'i' (0 a N-1) proporcionalmente sobre la lista 'faithLadder' (0 a L-1).
+         * Mapea un índice de paso 'i' (0 a N-1) proporcionalmente sobre la lista 'knowledgeLadder' (0 a L-1).
          * Esto garantiza la distribución exacta de los elementos sin generar undefined, incluso con
-         * cambios o reducciones en la lista 'faithLadder'.
+         * cambios o reducciones en la lista 'knowledgeLadder'.
          */
-        function getFaithLevelName(stepIndex) {
+        function getLevelName(stepIndex) {
             const N = totalLevels; // 18 preguntas
-            const L = faithLadder.length; // Niveles de fe definidos por el usuario (ej. 5 o 16)
+            const L = knowledgeLadder.length; // Escala de Conociminento definidos por el usuario (ej. 5 o 16)
             
-            if (N <= 1) return faithLadder[0] || "Fe Celestial";
+            if (N <= 1) return knowledgeLadder[0] || "Fe Celestial";
             if (L === 0) return `Paso de Fe ${stepIndex + 1}`;
             
             // Mapeo proporcional simétrico del índice
             const mappedIndex = Math.min(Math.floor((stepIndex / (N - 1)) * (L - 1)), L - 1);
-            return faithLadder[mappedIndex];
+            return knowledgeLadder[mappedIndex];
         }
 
-        // INICIALIZACIÓN DE ESCALA DE FE LATERAL DINÁMICA
+        // INICIALIZACIÓN DE ESCALA DE CONOCIMIENTO LATERAL DINÁMICA
         function buildLadder() {
             const container = document.getElementById('ladder-container');
             container.innerHTML = '';
@@ -681,7 +687,7 @@
                 const starIcon = isMilestone ? '<i class="fa-solid fa-star text-yellow-500 mr-1"></i>' : '';
                 
                 // Se obtiene el nombre del nivel mapeado proporcionalmente
-                const levelName = getFaithLevelName(i);
+                const levelName = getLevelName(i);
                 
                 item.innerHTML = `
                     <span class="font-bold">${starIcon}${i + 1} ♦</span>
@@ -694,7 +700,7 @@
         // TEXTOS DE INICIO DINÁMICOS
         function initStartScreen() {
             document.getElementById('start-levels-count').innerText = totalLevels;
-            document.getElementById('start-max-rank').innerText = getFaithLevelName(totalLevels - 1);
+            document.getElementById('start-max-rank').innerText = getLevelName(totalLevels - 1);
         }
 
         // WEB AUDIO API SYNTHESIZER FOR SOUND EFFECTS
@@ -847,7 +853,7 @@
             document.getElementById('question-progress').innerText = `${currentLevel + 1} / ${totalLevels}`;
             
             // Saca dinámicamente el nivel de fe para la pregunta actual
-            document.getElementById('current-faith-badge').innerText = getFaithLevelName(currentLevel);
+            document.getElementById('current-faith-badge').innerText = getLevelName(currentLevel);
 
             // Renderizar opciones
             for(let i = 0; i < 4; i++) {
@@ -1104,7 +1110,7 @@
                 iconContainer.className = "w-24 h-24 mx-auto rounded-full flex items-center justify-center bg-yellow-500/20 border-4 border-yellow-500 shadow-[0_0_20px_rgba(254,215,0,0.5)]";
                 iconContainer.innerHTML = `<i class="fa-solid fa-angles-up text-5xl text-yellow-400 animate-pulse"></i>`;
                 
-                const finalRank = getFaithLevelName(totalLevels - 1);
+                const finalRank = getLevelName(totalLevels - 1);
                 title.innerText = `¡ALCANZASTE EL RANGO DE ${finalRank.toUpperCase()}!`;
                 title.className = "text-2xl md:text-3xl font-black title-font text-yellow-400";
                 subtitle.innerText = "¡Santo, Santo! Tu sabiduría exegética sobre las profecías de Nahúm ha asombrado a la congregación entera. ¡Tu fe es inamovible!";
@@ -1119,9 +1125,9 @@
                 subtitle.innerText = "Has errado en el discernimiento teológico. Nínive ha caído y te has quedado estancado en el camino.";
                 
                 if (currentLevel === 0) {
-                    prizeBadge.innerText = `${getFaithLevelName(0)} (Rango Base)`;
+                    prizeBadge.innerText = `${getLevelName(0)} (Rango Base)`;
                 } else {
-                    prizeBadge.innerText = getFaithLevelName(currentLevel - 1);
+                    prizeBadge.innerText = getLevelName(currentLevel - 1);
                 }
 
                 const currentQ = questionsData[currentLevel];
